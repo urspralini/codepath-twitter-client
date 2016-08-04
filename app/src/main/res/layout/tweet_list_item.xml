@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlTweetItem"
+    android:layout_width="match_parent"
+    android:background="@drawable/tweet_item_shape"
+    android:layout_height="wrap_content">
+
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        tools:src="@drawable/ic_launcher"
+        android:id="@+id/ivUserProfileImage"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <LinearLayout
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:id="@+id/llTweetContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/ivUserProfileImage"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvUserHandle"
+            tools:text="\@pralini"
+            android:textColor="@color/hyper_link_blue"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTweetText"
+            android:textColor="@color/black"
+            tools:text="Study Says Democrats and Republicans Can Agree on These 3 TV Shows https://t.co/tgJGtf2gY1"
+            />
+    </LinearLayout>
+</RelativeLayout>
