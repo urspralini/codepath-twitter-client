@@ -1,13 +1,13 @@
-package com.codepath.apps.restclienttemplate.activities;
+package com.codepath.apps.twitter.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.RestApplication;
-import com.codepath.apps.restclienttemplate.clients.TwitterClient;
-import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.twitter.R;
+import com.codepath.apps.twitter.RestApplication;
+import com.codepath.apps.twitter.clients.TwitterClient;
+import com.codepath.apps.twitter.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;

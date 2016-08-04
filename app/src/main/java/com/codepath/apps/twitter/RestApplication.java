@@ -1,8 +1,8 @@
-package com.codepath.apps.restclienttemplate;
+package com.codepath.apps.twitter;
 
 import android.content.Context;
 
-import com.codepath.apps.restclienttemplate.clients.TwitterClient;
+import com.codepath.apps.twitter.clients.TwitterClient;
 
 /*
  * This is the Android application itself and is used to configure various settings

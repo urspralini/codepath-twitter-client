@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate.clients;
+package com.codepath.apps.twitter.clients;
 
 import android.content.Context;
 
