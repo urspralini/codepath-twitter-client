@@ -14,6 +14,7 @@ import com.codepath.apps.twitter.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -37,10 +38,40 @@ public class TimelineActivity extends AppCompatActivity {
         rvTweets.setAdapter(mTweetsAdapter);
         TwitterClient client = RestApplication.getRestClient();
         client.getHomeTimeline(1, new JsonHttpResponseHandler() {
+            @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
                 Log.d("DEBUG", "timeline: " + jsonArray.toString());
                 ArrayList<Tweet> tweets = Tweet.fromJSON(jsonArray);
                 mTweetsAdapter.addAll(tweets);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+        });
+
+        client.getCurrentUser(new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    String screenName = response.getString("screen_name");
+                    TimelineActivity.this.setTitle("@"+screenName);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
 
             @Override
