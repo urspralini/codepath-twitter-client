@@ -10,6 +10,7 @@ import com.codepath.apps.twitter.R;
 import com.codepath.apps.twitter.RestApplication;
 import com.codepath.apps.twitter.adapters.TweetsAdapter;
 import com.codepath.apps.twitter.clients.TwitterClient;
+import com.codepath.apps.twitter.listeners.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.twitter.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -26,23 +27,35 @@ public class TimelineActivity extends AppCompatActivity {
 
     private List<Tweet> mTweets;
     private TweetsAdapter mTweetsAdapter;
-
+    private TwitterClient mClient = RestApplication.getRestClient();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
         RecyclerView rvTweets = (RecyclerView)findViewById(R.id.rvTweets);
-        rvTweets.setLayoutManager(new LinearLayoutManager(this));
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvTweets.setLayoutManager(layoutManager);
         mTweets = new ArrayList<>();
         mTweetsAdapter = new TweetsAdapter(this, mTweets);
         rvTweets.setAdapter(mTweetsAdapter);
-        TwitterClient client = RestApplication.getRestClient();
-        client.getHomeTimeline(1, new JsonHttpResponseHandler() {
+        rvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
-                Log.d("DEBUG", "timeline: " + jsonArray.toString());
-                ArrayList<Tweet> tweets = Tweet.fromJSON(jsonArray);
-                mTweetsAdapter.addAll(tweets);
+            public void onLoadMore(int page, int totalItemsCount) {
+                fetchTweets(page);
+            }
+        });
+        fetchTweets(1);
+        mClient.getCurrentUser(new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    String screenName = response.getString("screen_name");
+                    TimelineActivity.this.setTitle("@"+screenName);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
 
             @Override
@@ -60,18 +73,16 @@ public class TimelineActivity extends AppCompatActivity {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
         });
+    }
 
-        client.getCurrentUser(new JsonHttpResponseHandler() {
 
+    private void fetchTweets(int page){
+        mClient.getHomeTimeline(page, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    String screenName = response.getString("screen_name");
-                    TimelineActivity.this.setTitle("@"+screenName);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
+            public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
+                Log.d("DEBUG", "timeline: " + jsonArray.toString());
+                ArrayList<Tweet> tweets = Tweet.fromJSON(jsonArray);
+                mTweetsAdapter.addAll(tweets);
             }
 
             @Override
