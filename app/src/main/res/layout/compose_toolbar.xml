@@ -17,6 +17,7 @@
             android:layout_height="48dp"
             android:layout_gravity="left"
             android:src="@drawable/close"
+            android:onClick="onClickCancel"
             />
 
         <ImageView
