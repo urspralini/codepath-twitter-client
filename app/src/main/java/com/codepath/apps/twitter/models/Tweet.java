@@ -1,14 +1,16 @@
 package com.codepath.apps.twitter.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class Tweet {
+public class Tweet implements Parcelable {
     // Define database columns and associated fields
-    private String uId;
     private String createdAt;
     private String body;
     private User user;
@@ -21,7 +23,6 @@ public class Tweet {
     public Tweet(JSONObject object) {
         super();
         try {
-            this.uId = object.getString("id");
             this.createdAt = object.getString("created_at");
             this.body = object.getString("text");
             this.user = User.fromJSON(object.getJSONObject("user"));
@@ -57,11 +58,37 @@ public class Tweet {
         return createdAt;
     }
 
-    public String getuId() {
-        return uId;
-    }
-
     public User getUser() {
         return user;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.createdAt);
+        dest.writeString(this.body);
+        dest.writeParcelable(this.user, flags);
+    }
+
+    protected Tweet(Parcel in) {
+        this.createdAt = in.readString();
+        this.body = in.readString();
+        this.user = in.readParcelable(User.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Tweet> CREATOR = new Parcelable.Creator<Tweet>() {
+        @Override
+        public Tweet createFromParcel(Parcel source) {
+            return new Tweet(source);
+        }
+
+        @Override
+        public Tweet[] newArray(int size) {
+            return new Tweet[size];
+        }
+    };
 }
