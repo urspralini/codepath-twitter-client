@@ -12,5 +12,6 @@
     <color name="tweet_background">#B25385</color>
     <color name="hyper_link_blue">#0645AD</color>
     <color name="dark_brown">#280115</color>
+    <color name="silver">#C0C0C0</color>
 
 </resources>

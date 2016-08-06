@@ -6,8 +6,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.apps.twitter.R;
 import com.codepath.apps.twitter.RestApplication;
 import com.codepath.apps.twitter.adapters.TweetsAdapter;
@@ -30,6 +32,7 @@ public class TimelineActivity extends AppCompatActivity {
     private List<Tweet> mTweets;
     private TweetsAdapter mTweetsAdapter;
     private Toolbar mToolBar;
+    private ImageView ivToolBarImage;
     private TextView mToolBarTitle;
     private TwitterClient mClient = RestApplication.getRestClient();
     @Override
@@ -38,9 +41,10 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timeline);
         mToolBar = (Toolbar)findViewById(R.id.toolbar);
         mToolBarTitle = (TextView)findViewById(R.id.tvToolbarTitle);
+        ivToolBarImage = (ImageView)findViewById(R.id.ivUserImage);
         setSupportActionBar(mToolBar);
         //Display icon in the toolbar
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         // Remove default title text
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         RecyclerView rvTweets = (RecyclerView)findViewById(R.id.rvTweets);
@@ -62,6 +66,10 @@ public class TimelineActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     String screenName = response.getString("screen_name");
+                    String imageUrl = response.getString("profile_image_url");
+                    Glide.with(TimelineActivity.this)
+                            .load(imageUrl)
+                            .into(ivToolBarImage);
                     mToolBarTitle.setText("@"+screenName);
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -17,7 +17,6 @@
         android:background="@color/grey"
         android:horizontalSpacing="16dp"
         android:verticalSpacing="16dp"
-        android:padding="16dp"
         android:clipToPadding="false"
         />
 
