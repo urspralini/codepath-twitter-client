@@ -24,11 +24,12 @@
         />
 
     <android.support.design.widget.FloatingActionButton
-        android:src="@drawable/twitter_compose"
+        android:src="@drawable/compose"
         app:fabSize="normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
+        app:backgroundTint="@color/colorAccent"
         android:layout_margin="16dp"
         app:layout_anchor="@id/rvTweets"
         app:layout_anchorGravity="bottom|right|end"/>
