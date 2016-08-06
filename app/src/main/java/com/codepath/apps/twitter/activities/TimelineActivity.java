@@ -43,8 +43,6 @@ public class TimelineActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Remove default title text
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        //getSupportActionBar().setLogo(R.drawable.twitter_logo);
-        //getSupportActionBar().setDisplayUseLogoEnabled(true);
         RecyclerView rvTweets = (RecyclerView)findViewById(R.id.rvTweets);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTweets.setLayoutManager(layoutManager);
