@@ -89,4 +89,10 @@ public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         return relativeDate;
     }
+
+
+    public long getLastTweetId(){
+        final Tweet tweet = mTweets.get(mTweets.size() - 1);
+        return tweet.getId();
+    }
 }

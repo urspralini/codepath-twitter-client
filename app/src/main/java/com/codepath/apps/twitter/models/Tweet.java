@@ -14,6 +14,7 @@ public class Tweet implements Parcelable {
     private String createdAt;
     private String body;
     private User user;
+    private long id;
 
     // Make sure to always define this constructor with no arguments
     public Tweet() {
@@ -26,6 +27,7 @@ public class Tweet implements Parcelable {
             this.createdAt = object.getString("created_at");
             this.body = object.getString("text");
             this.user = User.fromJSON(object.getJSONObject("user"));
+            this.id = object.getLong("id");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -74,6 +76,14 @@ public class Tweet implements Parcelable {
         this.user = user;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -84,12 +94,14 @@ public class Tweet implements Parcelable {
         dest.writeString(this.createdAt);
         dest.writeString(this.body);
         dest.writeParcelable(this.user, flags);
+        dest.writeLong(this.id);
     }
 
     protected Tweet(Parcel in) {
         this.createdAt = in.readString();
         this.body = in.readString();
         this.user = in.readParcelable(User.class.getClassLoader());
+        this.id = in.readLong();
     }
 
     public static final Parcelable.Creator<Tweet> CREATOR = new Parcelable.Creator<Tweet>() {

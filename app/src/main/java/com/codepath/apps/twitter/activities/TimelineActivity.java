@@ -44,7 +44,7 @@ public class TimelineActivity extends AppCompatActivity {
     private ActivityTimelineBinding mBinding;
     private User mCurrentUser;
     private RecyclerView mRvTweets;
-
+    private Long mMaxId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,10 +66,10 @@ public class TimelineActivity extends AppCompatActivity {
         mRvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                fetchTweets(page);
+                fetchTweets(mMaxId-1);
             }
         });
-        fetchTweets(1);
+        fetchTweets(null);
         getCurrentUser();
     }
 
@@ -111,13 +111,14 @@ public class TimelineActivity extends AppCompatActivity {
         });
     }
 
-    private void fetchTweets(int page){
-        mClient.getHomeTimeline(page, new JsonHttpResponseHandler() {
+    private void fetchTweets(Long maxId){
+        mClient.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
                 Log.d("DEBUG", "timeline: " + jsonArray.toString());
                 ArrayList<Tweet> tweets = Tweet.fromJSON(jsonArray);
                 mTweetsAdapter.addAll(tweets);
+                mMaxId = mTweetsAdapter.getLastTweetId();
             }
 
             @Override
@@ -134,6 +135,8 @@ public class TimelineActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
+
+
         });
     }
 
