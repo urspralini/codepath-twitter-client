@@ -16,11 +16,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
+    dataBinding.enabled = true
 }
 
 repositories {
     jcenter()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+ext {
+    supportLibVersion = '24.1.1'
 }
 
 dependencies {
@@ -35,4 +41,17 @@ dependencies {
     compile 'com.loopj.android:android-async-http:1.4.9'
     // ActiveAndroid for simple persistence with an ORM
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    compile "com.android.support:appcompat-v7:${supportLibVersion}"
+    //to use recycler view
+    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
+    //using glide instead of picasso
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    //required by glide
+    compile 'com.android.support:support-v4:24.1.1'
+    //circular image view
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+
+    compile "com.android.support:design:${supportLibVersion}"
+    //round corner image transformation
+    compile 'jp.wasabeef:picasso-transformations:2.1.0'
 }

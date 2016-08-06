@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate;
+package com.codepath.apps.twitter.clients;
 
 import android.content.Context;
 
@@ -21,14 +21,14 @@ import org.scribe.builder.api.TwitterApi;
  * NOTE: You may want to rename this object based on the service i.e TwitterClient or FlickrClient
  * 
  */
-public class RestClient extends OAuthBaseClient {
+public class TwitterClient extends OAuthBaseClient {
 	public static final Class<? extends Api> REST_API_CLASS = TwitterApi.class; // Change this
 	public static final String REST_URL = "https://api.twitter.com/1.1"; // Change this, base API URL
 	public static final String REST_CONSUMER_KEY = "xF1dP9pcxRGxrBVhsLD8gUz2h";       // Change this
 	public static final String REST_CONSUMER_SECRET = "RSea66alSbTqf8dtRHgeP0S7h6lKny0YogAOEa6MUN2VumuJq0"; // Change this
 	public static final String REST_CALLBACK_URL = "oauth://codepathtweets"; // Change this (here and in manifest)
 
-	public RestClient(Context context) {
+	public TwitterClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
 	}
 
@@ -51,10 +51,13 @@ public class RestClient extends OAuthBaseClient {
 	 *    i.e client.post(apiUrl, params, handler);
 	 */
 
-	public void getHomeTimeline(int page, AsyncHttpResponseHandler handler) {
+	public void getHomeTimeline(Long max_id, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/home_timeline.json");
 		RequestParams params = new RequestParams();
-		params.put("page", String.valueOf(page));
+		if(max_id != null){
+			params.put("max_id", String.valueOf(max_id));
+		}
+		params.put("count", 20);
 		getClient().get(apiUrl, params, handler);
 	}
 
@@ -64,5 +67,10 @@ public class RestClient extends OAuthBaseClient {
 		RequestParams params = new RequestParams();
 		params.put("status", body);
 		getClient().post(apiUrl, params, handler);
+	}
+
+	public void getCurrentUser(AsyncHttpResponseHandler handler){
+		String apiUrl = getApiUrl("account/verify_credentials.json");
+		getClient().get(apiUrl, handler);
 	}
 }
