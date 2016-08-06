@@ -5,9 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".activities.TimelineActivity">
 
+    <include layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
         android:id="@+id/rvTweets"
         android:background="@color/grey"
         android:horizontalSpacing="16dp"

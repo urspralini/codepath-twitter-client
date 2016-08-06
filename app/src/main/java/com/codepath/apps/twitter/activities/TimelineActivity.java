@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.codepath.apps.twitter.R;
 import com.codepath.apps.twitter.RestApplication;
@@ -27,11 +29,22 @@ public class TimelineActivity extends AppCompatActivity {
 
     private List<Tweet> mTweets;
     private TweetsAdapter mTweetsAdapter;
+    private Toolbar mToolBar;
+    private TextView mToolBarTitle;
     private TwitterClient mClient = RestApplication.getRestClient();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
+        mToolBar = (Toolbar)findViewById(R.id.toolbar);
+        mToolBarTitle = (TextView)findViewById(R.id.tvToolbarTitle);
+        setSupportActionBar(mToolBar);
+        //Display icon in the toolbar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // Remove default title text
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //getSupportActionBar().setLogo(R.drawable.twitter_logo);
+        //getSupportActionBar().setDisplayUseLogoEnabled(true);
         RecyclerView rvTweets = (RecyclerView)findViewById(R.id.rvTweets);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTweets.setLayoutManager(layoutManager);
@@ -51,7 +64,7 @@ public class TimelineActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     String screenName = response.getString("screen_name");
-                    TimelineActivity.this.setTitle("@"+screenName);
+                    mToolBarTitle.setText("@"+screenName);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
