@@ -16,6 +16,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
+    dataBinding.enabled = true
 }
 
 repositories {
@@ -50,4 +52,6 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
 
     compile "com.android.support:design:${supportLibVersion}"
+    //round corner image transformation
+    compile 'jp.wasabeef:picasso-transformations:2.1.0'
 }

@@ -1,21 +1,27 @@
 package com.codepath.apps.twitter.activities;
 
+import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.apps.twitter.Constants;
 import com.codepath.apps.twitter.R;
 import com.codepath.apps.twitter.RestApplication;
 import com.codepath.apps.twitter.adapters.TweetsAdapter;
 import com.codepath.apps.twitter.clients.TwitterClient;
+import com.codepath.apps.twitter.databinding.ActivityTimelineBinding;
 import com.codepath.apps.twitter.listeners.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.twitter.models.Tweet;
+import com.codepath.apps.twitter.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -32,16 +38,18 @@ public class TimelineActivity extends AppCompatActivity {
     private List<Tweet> mTweets;
     private TweetsAdapter mTweetsAdapter;
     private Toolbar mToolBar;
-    private ImageView ivToolBarImage;
+    private ImageView mIvToolBarImage;
     private TextView mToolBarTitle;
     private TwitterClient mClient = RestApplication.getRestClient();
+    private ActivityTimelineBinding mBinding;
+    private User mCurrentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timeline);
-        mToolBar = (Toolbar)findViewById(R.id.toolbar);
-        mToolBarTitle = (TextView)findViewById(R.id.tvToolbarTitle);
-        ivToolBarImage = (ImageView)findViewById(R.id.ivUserImage);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_timeline);
+        mToolBar = mBinding.appbar.toolbar;
+        mToolBarTitle = mBinding.appbar.tvToolbarTitle;
+        mIvToolBarImage = mBinding.appbar.ivUserImage;
         setSupportActionBar(mToolBar);
         //Display icon in the toolbar
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -60,17 +68,24 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
         fetchTweets(1);
+        getCurrentUser();
+    }
+
+    private void getCurrentUser() {
         mClient.getCurrentUser(new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
-                    String screenName = response.getString("screen_name");
-                    String imageUrl = response.getString("profile_image_url");
+                    mCurrentUser = new User();
+                    mCurrentUser.setName(response.getString("name"));
+                    mCurrentUser.setScreenName(response.getString("screen_name"));
+                    mCurrentUser.setProfileImageUrl(response.getString("profile_image_url"));
+                    mCurrentUser.setUid(response.getLong("id"));
                     Glide.with(TimelineActivity.this)
-                            .load(imageUrl)
-                            .into(ivToolBarImage);
-                    mToolBarTitle.setText("@"+screenName);
+                            .load(mCurrentUser.getProfileImageUrl())
+                            .into(mIvToolBarImage);
+                    mToolBarTitle.setText("@"+mCurrentUser.getScreenName());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -93,7 +108,6 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void fetchTweets(int page){
         mClient.getHomeTimeline(page, new JsonHttpResponseHandler() {
@@ -119,5 +133,20 @@ public class TimelineActivity extends AppCompatActivity {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
         });
+    }
+
+    public void onClickCompose(View view){
+        Intent intent = new Intent(view.getContext(), ComposeTweetActivity.class);
+        intent.putExtra(Constants.CURRENT_USER_KEY, mCurrentUser);
+        startActivityForResult(intent, Constants.COMPOSE_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK){
+            if(requestCode == Constants.COMPOSE_REQUEST_CODE) {
+
+            }
+        }
     }
 }
