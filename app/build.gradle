@@ -46,6 +46,8 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     //required by glide
     compile 'com.android.support:support-v4:24.1.1'
-    //circualr image view
+    //circular image view
     compile 'de.hdodenhof:circleimageview:2.1.0'
+
+    compile "com.android.support:design:${supportLibVersion}"
 }
