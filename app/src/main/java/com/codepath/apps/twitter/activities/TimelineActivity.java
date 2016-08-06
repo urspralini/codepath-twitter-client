@@ -43,6 +43,8 @@ public class TimelineActivity extends AppCompatActivity {
     private TwitterClient mClient = RestApplication.getRestClient();
     private ActivityTimelineBinding mBinding;
     private User mCurrentUser;
+    private RecyclerView mRvTweets;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,13 +57,13 @@ public class TimelineActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         // Remove default title text
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        RecyclerView rvTweets = (RecyclerView)findViewById(R.id.rvTweets);
+        mRvTweets = (RecyclerView)findViewById(R.id.rvTweets);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvTweets.setLayoutManager(layoutManager);
+        mRvTweets.setLayoutManager(layoutManager);
         mTweets = new ArrayList<>();
         mTweetsAdapter = new TweetsAdapter(this, mTweets);
-        rvTweets.setAdapter(mTweetsAdapter);
-        rvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+        mRvTweets.setAdapter(mTweetsAdapter);
+        mRvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 fetchTweets(page);
@@ -145,7 +147,11 @@ public class TimelineActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK){
             if(requestCode == Constants.COMPOSE_REQUEST_CODE) {
-
+                Tweet newTweet = data.getParcelableExtra(Constants.NEW_TWEET_KEY);
+                if(newTweet != null) {
+                    mTweetsAdapter.addToFirstPosition(newTweet);
+                    mRvTweets.scrollToPosition(0);
+                }
             }
         }
     }

@@ -62,6 +62,18 @@ public class Tweet implements Parcelable {
         return user;
     }
 
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public int describeContents() {
         return 0;
