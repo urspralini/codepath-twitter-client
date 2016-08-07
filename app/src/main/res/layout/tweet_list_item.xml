@@ -67,7 +67,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tvUserHandle"
+            android:maxLines="4"
             android:id="@+id/tvTweetText"
+            android:autoLink="all"
+            android:linksClickable="true"
             android:textColor="@color/black"
             tools:text="Study Says Democrats and Republicans Can Agree on These 3 TV Shows https://t.co/tgJGtf2gY1"
             />
