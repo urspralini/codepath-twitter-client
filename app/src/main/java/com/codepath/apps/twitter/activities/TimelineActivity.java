@@ -117,6 +117,7 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     private void fetchTweets(Long maxId){
+        if(mTweetsAdapter.getItemCount() > 60) return;
         mClient.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
