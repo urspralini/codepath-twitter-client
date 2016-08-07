@@ -3,6 +3,7 @@ package com.codepath.apps.twitter.activities;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,6 +46,8 @@ public class TimelineActivity extends AppCompatActivity {
     private User mCurrentUser;
     private RecyclerView mRvTweets;
     private Long mMaxId;
+    private SwipeRefreshLayout mSwipeContainer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,24 +56,26 @@ public class TimelineActivity extends AppCompatActivity {
         mToolBarTitle = mBinding.appbar.tvToolbarTitle;
         mIvToolBarImage = mBinding.appbar.ivUserImage;
         setSupportActionBar(mToolBar);
+        mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeContainer.setRefreshing(true);
+                fetchTweets(null);
+            }
+        });
+        mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_light,
+                android.R.color.holo_green_light,
+                android.R.color.holo_red_light,
+                android.R.color.holo_orange_light);
+
         //Display icon in the toolbar
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         // Remove default title text
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mRvTweets = (RecyclerView)findViewById(R.id.rvTweets);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mRvTweets.setLayoutManager(layoutManager);
-        mTweets = new ArrayList<>();
-        mTweetsAdapter = new TweetsAdapter(this, mTweets);
-        mRvTweets.setAdapter(mTweetsAdapter);
-        mRvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                fetchTweets(mMaxId-1);
-            }
-        });
-        fetchTweets(null);
+        configureRecycleView();
         getCurrentUser();
+        fetchTweets(null);
     }
 
     private void getCurrentUser() {
@@ -119,21 +124,25 @@ public class TimelineActivity extends AppCompatActivity {
                 ArrayList<Tweet> tweets = Tweet.fromJSON(jsonArray);
                 mTweetsAdapter.addAll(tweets);
                 mMaxId = mTweetsAdapter.getLastTweetId();
+                mSwipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
+                mSwipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                mSwipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                mSwipeContainer.setRefreshing(false);
             }
 
 
@@ -157,5 +166,20 @@ public class TimelineActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void configureRecycleView() {
+        mRvTweets = (RecyclerView)findViewById(R.id.rvTweets);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        mRvTweets.setLayoutManager(layoutManager);
+        mTweets = new ArrayList<>();
+        mTweetsAdapter = new TweetsAdapter(this, mTweets);
+        mRvTweets.setAdapter(mTweetsAdapter);
+        mRvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                fetchTweets(mMaxId-1);
+            }
+        });
     }
 }
